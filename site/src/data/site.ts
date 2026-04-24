@@ -1502,12 +1502,27 @@ Object.assign(pages["value-added-services"].en, {
   title: "Airport pickup and operational support for cold-chain logistics",
 });
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+export function sitePath(path: string) {
+  if (/^[a-z][a-z\d+\-.]*:/i.test(path) || path.startsWith("#")) {
+    return path;
+  }
+
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  if (basePath && (normalizedPath === basePath || normalizedPath.startsWith(`${basePath}/`))) {
+    return normalizedPath;
+  }
+
+  return `${basePath}${normalizedPath}`;
+}
+
 export function homeHref(lang: Lang) {
-  return lang === "zh" ? "/" : "/en/";
+  return sitePath(lang === "zh" ? "/" : "/en/");
 }
 
 export function pageHref(lang: Lang, page: PageKey) {
-  return lang === "zh" ? `/${page}/` : `/en/${page}/`;
+  return sitePath(lang === "zh" ? `/${page}/` : `/en/${page}/`);
 }
 
 export function pageLabel(lang: Lang, page: PageKey) {

@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+const contactHref = pageHref(lang, "contact");
 ---
 
 <footer class="enterprise-site-footer">

@@ -11,6 +11,7 @@ import {
   pageHref,
   pageImages,
   pages,
+  sitePath,
   type Lang,
 } from "../data/site";
 
@@ -20,7 +21,8 @@ interface Props {
 
 const { lang } = Astro.props;
 const content = homeContent[lang];
-const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+const contactHref = pageHref(lang, "contact");
+const secondaryActionHref = sitePath(content.secondaryAction.href);
 const heroBackgroundImages = [pageImages.home, landingHeroKwaiOne, landingHeroKwaiTwo];
 
 const heroHeadline =
@@ -205,7 +207,7 @@ const whyChoosePoints = content.reasonCards.map((item, index) => ({
               <a class="btn-primary" href={contactHref}>
                 {lang === "zh" ? "索取報價" : "Request a Quote"}
               </a>
-              <a class="btn-secondary" href={content.secondaryAction.href}>
+              <a class="btn-secondary" href={secondaryActionHref}>
                 {lang === "zh" ? "查看服務" : "Explore Services"}
               </a>
             </div>
@@ -352,7 +354,7 @@ const whyChoosePoints = content.reasonCards.map((item, index) => ({
           <span class="ref-home-section-kicker">{lang === "zh" ? "營運場景" : "Operational Scenarios"}</span>
           <h2 class="ref-home-section-title">{lang === "zh" ? "主要服務場景與交付重點" : "Key service scenarios and delivery priorities"}</h2>
         </div>
-        <a class="ref-home-inline-link" href={content.secondaryAction.href}>
+        <a class="ref-home-inline-link" href={secondaryActionHref}>
           {lang === "zh" ? "查看服務" : "View services"}
           <span aria-hidden="true">→</span>
         </a>
@@ -443,7 +445,7 @@ const whyChoosePoints = content.reasonCards.map((item, index) => ({
           <a class="btn-primary" href={contactHref}>
             {lang === "zh" ? "聯絡 ETAK" : "Contact ETAK"}
           </a>
-          <a class="btn-secondary" href={content.secondaryAction.href}>
+          <a class="btn-secondary" href={secondaryActionHref}>
             {content.secondaryAction.label}
           </a>
         </div>

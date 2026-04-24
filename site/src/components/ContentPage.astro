@@ -5,6 +5,7 @@ import FeatureIcon from "./FeatureIcon.astro";
 import {
   brand,
   homeHref,
+  pageHref,
   pageGalleryImages,
   pages,
   type Lang,
@@ -19,7 +20,7 @@ interface Props {
 const { lang, pageKey } = Astro.props;
 const entry = pages[pageKey];
 const content = entry[lang];
-const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+const contactHref = pageHref(lang, "contact");
 const pageGallery = pageGalleryImages[pageKey];
 
 const heroIconByPage = {

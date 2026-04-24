@@ -7,7 +7,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://etaklogistics.com',
+  site: 'https://ywhenry88.github.io',
+  base: '/etaklogistics.com',
   trailingSlash: 'always',
   vite: {
     plugins: [tailwindcss()]

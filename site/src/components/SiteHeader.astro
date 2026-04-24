@@ -23,7 +23,7 @@ const alternateLang = switchLanguage(lang);
 const alternateHref =
   currentPage === "home" ? homeHref(alternateLang) : pageHref(alternateLang, currentPage);
 const operationsHref = `${homeHref(lang)}#operations-overview`;
-const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+const contactHref = pageHref(lang, "contact");
 ---
 
 <header class="enterprise-site-header">
