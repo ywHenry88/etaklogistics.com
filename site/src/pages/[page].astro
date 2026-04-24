@@ -1,0 +1,30 @@
+---
+import ContentPage from "../components/ContentPage.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageImages, pageKeys, pages, type PageKey } from "../data/site";
+
+export function getStaticPaths() {
+  return pageKeys.map((pageKey) => ({
+    params: { page: pageKey },
+    props: { pageKey },
+  }));
+}
+
+interface Props {
+  pageKey: PageKey;
+}
+
+const { pageKey } = Astro.props;
+const content = pages[pageKey].zh;
+---
+
+<BaseLayout
+  lang="zh"
+  currentPage={pageKey}
+  title={content.metaTitle}
+  description={content.metaDescription}
+  ogImage={pageImages[pageKey]}
+>
+  <ContentPage lang="zh" pageKey={pageKey} />
+</BaseLayout>
+

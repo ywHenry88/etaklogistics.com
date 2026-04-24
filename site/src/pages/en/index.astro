@@ -1,0 +1,16 @@
+---
+import HomePage from "../../components/HomePage.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { homeContent, pageImages } from "../../data/site";
+---
+
+<BaseLayout
+  lang="en"
+  currentPage="home"
+  title={homeContent.en.metaTitle}
+  description={homeContent.en.metaDescription}
+  ogImage={pageImages.home}
+>
+  <HomePage lang="en" />
+</BaseLayout>
+

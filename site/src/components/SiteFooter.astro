@@ -1,0 +1,70 @@
+---
+import { Image } from "astro:assets";
+
+import etakLogo from "../assets/images/etak-logo.png";
+import { brand, navigation, pageHref, pageLabel, type Lang } from "../data/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+---
+
+<footer class="enterprise-site-footer">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_0.9fr_0.9fr_1fr] lg:px-8">
+    <div class="enterprise-site-footer-brand">
+      <div class="enterprise-site-footer-logo-wrap">
+        <Image
+          class="enterprise-site-footer-logo"
+          src={etakLogo}
+          alt={brand.legalName}
+          widths={[220, 320]}
+          sizes="220px"
+        />
+      </div>
+      <p class="enterprise-site-footer-summary">
+        {lang === "zh"
+          ? "以葵涌為營運核心，整合多溫區倉儲、冷鏈配送、機場提貨與營運支援，協助香港企業客戶穩定安排冷鏈物流。"
+          : "From Kwai Chung, ETAK connects multi-zone warehousing, cold-chain delivery, airport pickup, and operational support for Hong Kong business customers."}
+      </p>
+      <a class="btn-primary mt-6" href={contactHref}>
+        {lang === "zh" ? "提交查詢" : "Send Inquiry"}
+      </a>
+    </div>
+
+    <div>
+      <p class="enterprise-site-footer-title">{lang === "zh" ? "營運重點" : "Operations"}</p>
+      <div class="enterprise-site-footer-stack">
+        <p>{lang === "zh" ? "葵涌 ATL Logistics Centre" : "ATL Logistics Centre, Kwai Chung"}</p>
+        <p>{lang === "zh" ? "多溫區冷鏈處理" : "Multi-zone cold-chain handling"}</p>
+        <p>{lang === "zh" ? "本地配送與機場提貨" : "Local delivery and airport pickup"}</p>
+      </div>
+    </div>
+
+    <div>
+      <p class="enterprise-site-footer-title">{lang === "zh" ? "網站導覽" : "Site Navigation"}</p>
+      <div class="enterprise-site-footer-links">
+        {navigation.map(({ key }) => (
+          <a class="enterprise-site-footer-link" href={pageHref(lang, key)}>
+            {pageLabel(lang, key)}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <p class="enterprise-site-footer-title">{lang === "zh" ? "聯絡資料" : "Contact"}</p>
+      <div class="enterprise-site-footer-stack">
+        <p>{brand.address[lang]}</p>
+        <a class="enterprise-site-footer-link" href={`tel:${brand.phone.replace(/\s+/g, "")}`}>
+          {brand.phone}
+        </a>
+        <a class="enterprise-site-footer-link" href={`mailto:${brand.email}`}>
+          {brand.email}
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

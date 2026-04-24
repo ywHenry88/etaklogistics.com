@@ -1,0 +1,468 @@
+---
+import { Image } from "astro:assets";
+
+import landingHeroKwaiOne from "../assets/images/landing-page-bg-kw1.png";
+import landingHeroKwaiTwo from "../assets/images/landing-page-bg-kw2.png";
+import FeatureIcon from "./FeatureIcon.astro";
+import {
+  brand,
+  homeGalleryImages,
+  homeContent,
+  pageHref,
+  pageImages,
+  pages,
+  type Lang,
+} from "../data/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const content = homeContent[lang];
+const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+const heroBackgroundImages = [pageImages.home, landingHeroKwaiOne, landingHeroKwaiTwo];
+
+const heroHeadline =
+  lang === "zh"
+    ? {
+        primary: "香港冷鏈物流。",
+        secondary: "由倉儲到配送。",
+        summary: "為食品、零售、酒店及餐飲供應鏈提供可靠的冷凍倉儲與配送支援。",
+      }
+    : {
+        primary: "Cold-chain logistics.",
+        secondary: "From storage to delivery.",
+        summary: "Reliable refrigerated warehousing, delivery, and shipment support for Hong Kong supply chains.",
+      };
+
+const heroKpiStage =
+  lang === "zh"
+    ? {
+        kicker: "核心營運指標",
+        title: "容量、溫控與網絡效率，一目了然。",
+        body: "30,000 平方呎、多溫區與葵涌位置，讓客戶快速掌握 ETAK 的冷鏈服務基礎。",
+      }
+    : {
+        kicker: "Core operating KPIs",
+        title: "Capacity, control, and coverage at a glance.",
+        body: "Warehouse footprint, temperature range, and Kwai Chung location give buyers a quick read on ETAK's cold-chain base.",
+      };
+
+const heroKpiLabels =
+  lang === "zh"
+    ? ["冷鏈倉儲規模", "多溫區溫控", "香港營運節點"]
+    : ["Warehouse footprint", "Temperature control", "Operating node"];
+
+const heroKpis = content.heroStats.map((stat, index) => ({
+  ...stat,
+  kicker: heroKpiLabels[index] ?? (lang === "zh" ? "核心指標" : "Core KPI"),
+}));
+
+const heroProofs = [
+  {
+    icon: "route",
+    label: lang === "zh" ? "全港網絡" : "Hong Kong network",
+  },
+  {
+    icon: "clipboard",
+    label: lang === "zh" ? "準時交付" : "Scheduled delivery",
+  },
+  {
+    icon: "shield",
+    label: lang === "zh" ? "安全可靠" : "Secure handling",
+  },
+  {
+    icon: "snowflake",
+    label: lang === "zh" ? "24/7 支援" : "24/7 support",
+  },
+] as const;
+
+const caseStudies = [
+  {
+    key: "warehousing",
+    title: lang === "zh" ? "冷凍倉儲與分貨流程" : "Refrigerated warehousing and staging",
+    body:
+      lang === "zh"
+        ? "以多溫區倉儲、分貨與出貨前處理支撐日常冷鏈補貨。"
+        : "Multi-zone warehousing, sorting, and staging aligned to recurring cold-chain replenishment.",
+  },
+  {
+    key: "transportation",
+    title: lang === "zh" ? "本地冷凍配送安排" : "Local refrigerated delivery flow",
+    body:
+      lang === "zh"
+        ? "由倉庫或指定提貨點接入香港本地配送網絡。"
+        : "Refrigerated fleet coverage from warehouse or handover point into Hong Kong routes.",
+  },
+  {
+    key: "value-added-services",
+    title: lang === "zh" ? "機場提貨與交接支援" : "Airport pickup and shipment support",
+    body:
+      lang === "zh"
+        ? "把機場提貨、文件處理與後續交收納入同一條作業線。"
+        : "Airport pickup, documents, and handover support integrated into one operational flow.",
+  },
+].map((item) => {
+  const page = pages[item.key][lang];
+  return {
+    ...item,
+    href: pageHref(lang, item.key),
+    image: pages[item.key].image,
+    metric: page.heroStats[0]?.value ?? "",
+  };
+});
+
+const services = [
+  {
+    key: "warehousing",
+    icon: "warehouse",
+    kicker: lang === "zh" ? "多溫區倉儲" : "Multi-zone storage",
+  },
+  {
+    key: "transportation",
+    icon: "truck",
+    kicker: lang === "zh" ? "冷鏈配送" : "Cold-chain delivery",
+  },
+  {
+    key: "value-added-services",
+    icon: "plane",
+    kicker: lang === "zh" ? "提貨與支援" : "Pickup support",
+  },
+  {
+    key: "facilities",
+    icon: "shield",
+    kicker: lang === "zh" ? "設施與控制" : "Facility control",
+  },
+] as const;
+
+const contactMethods = [
+  {
+    label: lang === "zh" ? "電話" : "Phone",
+    value: brand.phone,
+    href: `tel:${brand.phone.replace(/\s+/g, "")}`,
+  },
+  {
+    label: lang === "zh" ? "電郵" : "Email",
+    value: brand.email,
+    href: `mailto:${brand.email}`,
+  },
+  {
+    label: lang === "zh" ? "營運基地" : "Operating base",
+    value: lang === "zh"
+      ? "葵涌 ATL Logistics Centre"
+      : "ATL Logistics Centre, Kwai Chung",
+  },
+] as const;
+
+const reasonIcons = ["pin", "snowflake", "layers", "shield"] as const;
+
+const homepageServiceCards = services.map((service) => ({
+  ...service,
+  href: pageHref(lang, service.key),
+  title: pages[service.key].cardLabel[lang],
+  summary: pages[service.key][lang].summary,
+  image: pages[service.key].image,
+}));
+
+const whyChoosePoints = content.reasonCards.map((item, index) => ({
+  ...item,
+  icon: reasonIcons[index] ?? "shield",
+}));
+---
+
+<div class="enterprise-home-page">
+  <section class="ref-home-hero section-shell">
+    <div class="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
+      <div class="ref-home-hero-shell">
+        <div class="ref-home-hero-image-stack" aria-hidden="true">
+          {heroBackgroundImages.map((image, index) => (
+            <Image
+              class="ref-home-hero-image"
+              src={image}
+              alt=""
+              widths={[1800]}
+              sizes="100vw"
+              loading="eager"
+              decoding="async"
+              style={`--hero-slide-index: ${index};`}
+            />
+          ))}
+        </div>
+        <div class="ref-home-hero-overlay"></div>
+
+        <div class="ref-home-hero-grid">
+          <div class="ref-home-hero-copy" data-reveal>
+            <span class="ref-home-kicker">{content.eyebrow}</span>
+            <h1 class="ref-home-hero-title">
+              <span>{heroHeadline.primary}</span>
+              <span class="ref-home-hero-title-accent">{heroHeadline.secondary}</span>
+            </h1>
+            <p class="ref-home-hero-summary">{heroHeadline.summary}</p>
+            <p class="ref-home-hero-intro">{content.intro}</p>
+
+            <div class="ref-home-hero-actions">
+              <a class="btn-primary" href={contactHref}>
+                {lang === "zh" ? "索取報價" : "Request a Quote"}
+              </a>
+              <a class="btn-secondary" href={content.secondaryAction.href}>
+                {lang === "zh" ? "查看服務" : "Explore Services"}
+              </a>
+            </div>
+          </div>
+
+          <aside
+            id="operations-overview"
+            class="ref-home-kpi-stage"
+            data-reveal
+            style="--reveal-delay: 120ms;"
+          >
+            <div class="ref-home-kpi-stage-head">
+              <p class="ref-home-kpi-stage-kicker">{heroKpiStage.kicker}</p>
+              <h2 class="ref-home-kpi-stage-title">{heroKpiStage.title}</h2>
+              <p class="ref-home-kpi-stage-body">{heroKpiStage.body}</p>
+            </div>
+
+            <div class="ref-home-kpi-stage-stack">
+              {heroKpis.map((stat, index) => (
+                <article
+                  class:list={[
+                    "ref-home-kpi-card",
+                    index === 0 && "ref-home-kpi-card-front",
+                    index === 1 && "ref-home-kpi-card-right",
+                    index === 2 && "ref-home-kpi-card-left",
+                  ]}
+                  style={`--stack-index: ${index};`}
+                >
+                  <div class="ref-home-kpi-card-face">
+                    <p class="ref-home-kpi-label">{stat.kicker}</p>
+                    <p
+                      class:list={[
+                        "ref-home-kpi-value",
+                        String(stat.value).length > 8 && "ref-home-kpi-value-long",
+                      ]}
+                    >
+                      {stat.value}
+                    </p>
+                    <p class="ref-home-kpi-body">{stat.label}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </aside>
+        </div>
+
+        <div class="ref-home-proof-row">
+          {heroProofs.map((item, index) => (
+            <div
+              class="ref-home-proof-item"
+              data-reveal
+              style={`--reveal-delay: ${index * 80 + 120}ms;`}
+            >
+              <FeatureIcon name={item.icon} className="ref-home-proof-icon" />
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref-home-section section-shell">
+    <div class="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
+      <div class="ref-home-services-layout">
+        <div>
+          <div class="ref-home-section-head" data-reveal>
+            <span class="ref-home-section-kicker">{lang === "zh" ? "服務範圍" : "Services"}</span>
+            <h2 class="ref-home-section-title">{content.servicesHeading}</h2>
+            <p class="ref-home-section-body">{content.servicesLead}</p>
+          </div>
+
+          <div class="ref-home-service-grid">
+            {homepageServiceCards.map((service, index) => (
+              <a
+                class="ref-home-service-card"
+                href={service.href}
+                data-reveal
+                style={`--reveal-delay: ${index * 80 + 100}ms;`}
+              >
+                <div class="ref-home-service-media">
+                  <Image
+                    class="ref-home-service-image"
+                    src={service.image}
+                    alt={service.title}
+                    widths={[640, 960]}
+                    sizes="(max-width: 1024px) 100vw, 42vw"
+                  />
+                </div>
+                <div class="ref-home-service-content">
+                  <p class="ref-home-service-index">{String(index + 1).padStart(2, "0")}</p>
+                  <div class="ref-home-service-icon">
+                    <FeatureIcon name={service.icon} />
+                  </div>
+                  <h3 class="ref-home-service-title">{service.title}</h3>
+                  <p class="ref-home-service-body">{service.summary}</p>
+                  <span class="ref-home-inline-link">
+                    {lang === "zh" ? "查看詳情" : "View details"}
+                    <span aria-hidden="true">→</span>
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <aside class="ref-home-why-card" data-reveal style="--reveal-delay: 140ms;">
+          <div>
+            <span class="ref-home-section-kicker">{lang === "zh" ? "服務優勢" : "Service Strengths"}</span>
+            <h2 class="ref-home-section-title">{content.reasonsHeading}</h2>
+            <p class="ref-home-section-body">{content.reasonsLead}</p>
+          </div>
+
+          <div class="ref-home-why-list">
+            {whyChoosePoints.map((item) => (
+              <div class="ref-home-why-item">
+                <FeatureIcon name={item.icon} className="ref-home-why-icon" />
+                <div>
+                  <p class="ref-home-why-title">{item.title}</p>
+                  <p class="ref-home-why-body">{item.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="ref-home-why-photo-wrap">
+            <Image
+              class="ref-home-why-photo"
+              src={pageImages.about}
+              alt={lang === "zh" ? "香港物流走廊場景" : "Hong Kong logistics corridor"}
+              widths={[960]}
+              sizes="(max-width: 1024px) 100vw, 34vw"
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref-home-section section-shell">
+    <div class="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
+      <div class="ref-home-section-head ref-home-section-head-inline" data-reveal>
+        <div>
+          <span class="ref-home-section-kicker">{lang === "zh" ? "營運場景" : "Operational Scenarios"}</span>
+          <h2 class="ref-home-section-title">{lang === "zh" ? "主要服務場景與交付重點" : "Key service scenarios and delivery priorities"}</h2>
+        </div>
+        <a class="ref-home-inline-link" href={content.secondaryAction.href}>
+          {lang === "zh" ? "查看服務" : "View services"}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <div class="ref-home-case-grid">
+        {caseStudies.map((item, index) => (
+          <a
+            class="ref-home-case-card"
+            href={item.href}
+            data-reveal
+            style={`--reveal-delay: ${index * 90 + 100}ms;`}
+          >
+            <Image
+              class="ref-home-case-image"
+              src={item.image}
+              alt={item.title}
+              widths={[960]}
+              sizes="(max-width: 1024px) 100vw, 32vw"
+            />
+            <div class="ref-home-case-content">
+              <p class="ref-home-case-metric">{item.metric}</p>
+              <h3 class="ref-home-case-title">{item.title}</h3>
+              <p class="ref-home-case-body">{item.body}</p>
+              <span class="ref-home-inline-link">
+                {lang === "zh" ? "查看詳情" : "View details"}
+                <span aria-hidden="true">→</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="operations-gallery" class="ref-home-gallery-section section-shell">
+    <div class="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
+      <div class="ref-home-gallery-head" data-reveal>
+        <span class="ref-home-section-kicker">
+          {lang === "zh" ? "冷鏈現場" : "Cold-chain Operations"}
+        </span>
+        <h2 class="ref-home-section-title">
+          {lang === "zh" ? "冷鏈作業現場" : "Cold-chain operations in practice"}
+        </h2>
+        <p class="ref-home-section-body">
+          {lang === "zh"
+            ? "冷房、月台、機場提貨、分貨與溫控設施，涵蓋倉儲、配送及支援流程的主要環節。"
+            : "Cold rooms, docks, airport pickup, sorting, and control systems across storage, delivery, and support operations."}
+        </p>
+      </div>
+
+      <div class="ref-home-gallery-grid">
+        {homeGalleryImages.map((item, index) => (
+          <article
+            class="ref-home-gallery-card"
+            data-reveal
+            style={`--reveal-delay: ${index * 55 + 100}ms;`}
+          >
+            <Image
+              class="ref-home-gallery-image"
+              src={item.image}
+              alt={item.title[lang]}
+              widths={[640, 960, 1440]}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+            <div class="ref-home-gallery-overlay"></div>
+            <div class="ref-home-gallery-copy">
+              <p class="ref-home-gallery-index">{String(index + 1).padStart(2, "0")}</p>
+              <h3 class="ref-home-gallery-title">{item.title[lang]}</h3>
+              <p class="ref-home-gallery-body">{item.caption[lang]}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell enterprise-contact-shell">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="enterprise-contact-panel ref-home-contact-panel" data-reveal>
+        <div>
+          <span class="ref-home-section-kicker">{lang === "zh" ? "聯絡我們" : "Contact Us"}</span>
+          <h2 class="ref-home-section-title">{content.ctaTitle}</h2>
+          <p class="ref-home-section-body ref-home-contact-body">{content.ctaBody}</p>
+        </div>
+
+        <div class="ref-home-contact-actions">
+          <a class="btn-primary" href={contactHref}>
+            {lang === "zh" ? "聯絡 ETAK" : "Contact ETAK"}
+          </a>
+          <a class="btn-secondary" href={content.secondaryAction.href}>
+            {content.secondaryAction.label}
+          </a>
+        </div>
+
+        <div class="ref-home-contact-meta">
+          {contactMethods.map((item) => (
+            <div class="ref-home-contact-meta-item">
+              <p class="ref-home-contact-meta-label">{item.label}</p>
+              {item.href ? (
+                <a class="ref-home-contact-meta-value" href={item.href}>
+                  {item.value}
+                </a>
+              ) : (
+                <p class="ref-home-contact-meta-value">{item.value}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

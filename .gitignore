@@ -1,0 +1,15 @@
+# Local/generated output
+tmp/
+output/
+review-screens/
+astro-dev.*.log
+
+# Astro app dependencies and build output
+site/node_modules/
+site/dist/
+site/.astro/
+
+# Environment and OS files
+.env
+.env.*
+.DS_Store

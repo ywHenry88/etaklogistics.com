@@ -1,0 +1,125 @@
+---
+import { Image } from "astro:assets";
+
+import etakLogo from "../assets/images/etak-logo.png";
+import {
+  brand,
+  homeHref,
+  navigation,
+  pageHref,
+  pageLabel,
+  switchLanguage,
+  type Lang,
+  type SitePageKey,
+} from "../data/site";
+
+interface Props {
+  lang: Lang;
+  currentPage: SitePageKey;
+}
+
+const { lang, currentPage } = Astro.props;
+const alternateLang = switchLanguage(lang);
+const alternateHref =
+  currentPage === "home" ? homeHref(alternateLang) : pageHref(alternateLang, currentPage);
+const operationsHref = `${homeHref(lang)}#operations-overview`;
+const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+---
+
+<header class="enterprise-site-header">
+  <div class="enterprise-site-header-inner mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <a class="enterprise-site-brand" href={homeHref(lang)}>
+      <Image
+        class="enterprise-site-brand-logo"
+        src={etakLogo}
+        alt={brand.legalName}
+        widths={[180, 260, 360]}
+        sizes="(max-width: 768px) 150px, 210px"
+        loading="eager"
+      />
+      <span class="enterprise-site-brand-copy">
+        <span class="enterprise-site-brand-tagline">
+          {lang === "zh" ? "香港冷鏈倉儲與配送" : "Cold-chain warehousing and distribution"}
+        </span>
+      </span>
+    </a>
+
+    <nav class="enterprise-site-nav hidden lg:flex">
+      {navigation.map(({ key }) => {
+        const active = currentPage === key;
+        return (
+          <a
+            class:list={[
+              "enterprise-site-nav-link",
+              active && "enterprise-site-nav-link-active",
+            ]}
+            href={pageHref(lang, key)}
+          >
+            {pageLabel(lang, key)}
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="enterprise-site-actions hidden lg:flex">
+      <a class="enterprise-site-lang" href={alternateHref}>
+        {lang === "zh" ? "EN" : "中文"}
+      </a>
+      <a class="btn-secondary" href={operationsHref}>
+        {lang === "zh" ? "服務概覽" : "Service Overview"}
+      </a>
+      <a class="btn-primary" href={contactHref}>
+        {lang === "zh" ? "索取報價" : "Get a Quote"}
+      </a>
+    </div>
+
+    <details class="enterprise-site-mobile relative lg:hidden">
+      <summary class="enterprise-site-mobile-toggle">
+        <span class="sr-only">Menu</span>
+        <span class="enterprise-site-mobile-lines">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </summary>
+      <div class="enterprise-site-mobile-panel">
+        <div class="enterprise-site-mobile-panel-top">
+          <div>
+            <p class="enterprise-site-mobile-title">{brand.shortName[lang]}</p>
+            <p class="enterprise-site-mobile-subtitle">
+              {lang === "zh" ? "香港冷鏈倉儲與配送" : "Cold-chain warehousing and distribution"}
+            </p>
+          </div>
+          <a class="enterprise-site-mobile-lang" href={alternateHref}>
+            {lang === "zh" ? "EN" : "中文"}
+          </a>
+        </div>
+
+        <div class="enterprise-site-mobile-links">
+          {navigation.map(({ key }) => {
+            const active = currentPage === key;
+            return (
+              <a
+                class:list={[
+                  "enterprise-site-mobile-link",
+                  active && "enterprise-site-mobile-link-active",
+                ]}
+                href={pageHref(lang, key)}
+              >
+                {pageLabel(lang, key)}
+              </a>
+            );
+          })}
+        </div>
+
+        <a class="btn-secondary mt-4 w-full justify-center" href={operationsHref}>
+          {lang === "zh" ? "服務概覽" : "Service Overview"}
+        </a>
+
+        <a class="btn-primary mt-4 w-full justify-center" href={contactHref}>
+          {lang === "zh" ? "索取報價" : "Get a Quote"}
+        </a>
+      </div>
+    </details>
+  </div>
+</header>

@@ -1,0 +1,413 @@
+---
+import { Image } from "astro:assets";
+
+import FeatureIcon from "./FeatureIcon.astro";
+import {
+  brand,
+  homeHref,
+  pageGalleryImages,
+  pages,
+  type Lang,
+  type PageKey,
+} from "../data/site";
+
+interface Props {
+  lang: Lang;
+  pageKey: PageKey;
+}
+
+const { lang, pageKey } = Astro.props;
+const entry = pages[pageKey];
+const content = entry[lang];
+const contactHref = lang === "zh" ? "/contact/" : "/en/contact/";
+const pageGallery = pageGalleryImages[pageKey];
+
+const heroIconByPage = {
+  warehousing: "warehouse",
+  transportation: "truck",
+  "value-added-services": "plane",
+  facilities: "shield",
+  about: "pin",
+  contact: "clipboard",
+} as const;
+
+const pageIcon = heroIconByPage[pageKey];
+const sectionIcons = [pageIcon, "thermo", "layers", "clipboard"] as const;
+const highlightIcons = [pageIcon, "thermo", "shield"] as const;
+---
+
+<div class="enterprise-content-page">
+  <section class="hero-frame enterprise-page-hero-shell">
+    <div class="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6 lg:px-8 lg:pb-14 lg:pt-12">
+      <div class="enterprise-page-hero-panel">
+        <div class="enterprise-page-hero-top">
+          <div class="enterprise-page-hero-copy" data-reveal>
+            <FeatureIcon name={pageIcon} />
+            <span class="eyebrow mt-6">{content.eyebrow}</span>
+            <h1 class="display-title enterprise-page-title mt-6">{content.title}</h1>
+            <p class="section-lead enterprise-page-lead mt-6">{content.heroBody}</p>
+
+            <div class="enterprise-page-hero-actions mt-8">
+              <a class="btn-primary" href={contactHref}>
+                {lang === "zh" ? "討論需求" : "Discuss Requirements"}
+              </a>
+              <a class="btn-secondary" href={homeHref(lang)}>
+                {lang === "zh" ? "返回首頁" : "Back to Home"}
+              </a>
+            </div>
+          </div>
+
+          <article class="enterprise-page-summary-card" data-reveal style="--reveal-delay: 100ms;">
+            <p class="enterprise-card-kicker">
+              {lang === "zh" ? "重點概覽" : "At a glance"}
+            </p>
+            <h2 class="enterprise-page-summary-title">
+              {content.summary}
+            </h2>
+            <div class="enterprise-page-stat-grid">
+              {content.heroStats.map((stat) => (
+                <div class="enterprise-page-stat-item">
+                  <p class="enterprise-page-stat-value">{stat.value}</p>
+                  <p class="enterprise-page-stat-label">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+
+        <div class="enterprise-page-hero-grid">
+          <div class="enterprise-page-visual-card" data-reveal style="--reveal-delay: 160ms;">
+            <Image
+              class="enterprise-page-visual-image"
+              src={entry.image}
+              alt={content.title}
+              widths={[1440]}
+              sizes="(max-width: 1024px) 100vw, 52vw"
+            />
+            <div class="enterprise-page-visual-overlay"></div>
+            <div class="enterprise-page-visual-badge">
+              {lang === "zh" ? "香港營運場景" : "Hong Kong operating context"}
+            </div>
+            <div class="enterprise-page-visual-copy">
+              <p class="enterprise-page-visual-kicker">
+                {lang === "zh" ? "營運重點" : "Operating focus"}
+              </p>
+              <h2 class="enterprise-page-visual-title">{content.leadTitle}</h2>
+              <p class="enterprise-page-visual-body">{content.leadBody}</p>
+            </div>
+          </div>
+
+          <div class="enterprise-page-highlight-rail">
+            {content.highlights.map((item, index) => (
+              <div
+                class="enterprise-page-highlight-card"
+                data-reveal
+                style={`--reveal-delay: ${index * 90 + 190}ms;`}
+              >
+                <FeatureIcon name={highlightIcons[index] ?? "shield"} className="enterprise-icon-compact" />
+                <div>
+                  <p class="enterprise-page-highlight-title">{item}</p>
+                  <p class="enterprise-page-highlight-body">
+                    {content.heroStats[index]?.label ?? content.summary}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="page-gallery" class="section-shell enterprise-page-gallery-section">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="enterprise-page-gallery-head" data-reveal>
+        <span class="eyebrow">
+          {lang === "zh" ? "作業場景" : "Operating scenes"}
+        </span>
+        <h2 class="section-title">
+          {lang === "zh" ? "冷鏈倉儲、配送與支援流程" : "Cold-chain warehousing, delivery, and support flow"}
+        </h2>
+        <p class="section-lead">
+          {lang === "zh"
+            ? "冷房、月台、車隊、調度與溫控場景，涵蓋日常冷鏈操作的主要環節。"
+            : "Cold-room, dock, fleet, dispatch, and temperature-control work across daily cold-chain operations."}
+        </p>
+      </div>
+
+      <div class="enterprise-page-gallery-grid">
+        {pageGallery.map((item, index) => (
+          <article
+            class="enterprise-page-gallery-card"
+            data-reveal
+            style={`--reveal-delay: ${index * 90 + 100}ms;`}
+          >
+            <Image
+              class="enterprise-page-gallery-image"
+              src={item.image}
+              alt={item.title[lang]}
+              widths={[640, 960, 1440]}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+            <div class="enterprise-page-gallery-shade"></div>
+            <div class="enterprise-page-gallery-copy">
+              <p class="enterprise-page-gallery-kicker">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <h3 class="enterprise-page-gallery-title">{item.title[lang]}</h3>
+              <p class="enterprise-page-gallery-body">{item.caption[lang]}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell enterprise-section">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="enterprise-section-head" data-reveal>
+        <span class="eyebrow">
+          {lang === "zh" ? "服務詳情" : "Service details"}
+        </span>
+        <h2 class="section-title">{content.leadTitle}</h2>
+        <p class="section-lead">{content.leadBody}</p>
+      </div>
+
+      <div class="enterprise-page-body-grid">
+        <aside class="enterprise-page-overview-rail">
+          <article class="enterprise-page-overview-card" data-reveal style="--reveal-delay: 100ms;">
+            <p class="enterprise-card-kicker">
+              {lang === "zh" ? "核心資料" : "Key facts"}
+            </p>
+            <div class="enterprise-page-overview-list">
+              {content.heroStats.map((stat, index) => (
+                <div class="enterprise-page-overview-item">
+                  <FeatureIcon name={sectionIcons[index] ?? "shield"} className="enterprise-icon-compact" />
+                  <div>
+                    <p class="enterprise-page-overview-title">{stat.value}</p>
+                    <p class="enterprise-page-overview-body">{stat.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article class="enterprise-page-overview-card" data-reveal style="--reveal-delay: 180ms;">
+            <p class="enterprise-card-kicker">
+              {lang === "zh" ? "服務配套" : "Service fit"}
+            </p>
+            <div class="enterprise-page-chip-stack">
+              {content.highlights.map((item) => (
+                <span class="enterprise-page-chip">{item}</span>
+              ))}
+            </div>
+          </article>
+        </aside>
+
+        <div class="enterprise-page-story-grid">
+          {content.sections.map((section, index) => (
+            <article
+              class="enterprise-page-story-card"
+              data-reveal
+              style={`--reveal-delay: ${index * 90 + 110}ms;`}
+            >
+              <div class="enterprise-page-story-top">
+                <FeatureIcon name={sectionIcons[index] ?? "shield"} />
+                <div>
+                  <p class="enterprise-page-story-index">{`0${index + 1}`}</p>
+                  <h3 class="enterprise-page-story-title">{section.title}</h3>
+                </div>
+              </div>
+              <p class="enterprise-page-story-body">{section.body}</p>
+              {section.bullets && (
+                <ul class="enterprise-bullet-list mt-6">
+                  {section.bullets.map((bullet) => (
+                    <li>
+                      <span class="enterprise-bullet-dot"></span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {content.kind === "standard" && (
+    <section class="section-shell enterprise-section enterprise-section-surface">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="enterprise-page-focus-shell">
+          <div class="enterprise-page-focus-copy" data-reveal>
+            <span class="eyebrow">
+              {lang === "zh" ? "營運重點" : "Operational focus"}
+            </span>
+            <h2 class="section-title">
+              {lang === "zh"
+                ? "冷鏈流程中的配套重點"
+                : "Cold-chain operating priorities"}
+            </h2>
+            <p class="section-lead">{content.summary}</p>
+          </div>
+
+          <div class="enterprise-page-focus-grid">
+            {content.highlights.map((item, index) => (
+              <div
+                class="enterprise-page-focus-card"
+                data-reveal
+                style={`--reveal-delay: ${index * 90 + 100}ms;`}
+              >
+                <FeatureIcon name={highlightIcons[index] ?? "shield"} />
+                <div>
+                  <p class="enterprise-page-focus-title">{item}</p>
+                  <p class="enterprise-page-focus-body">
+                    {content.heroStats[index]?.label ?? content.leadBody}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {content.kind === "contact" && (
+    <section class="section-shell enterprise-section enterprise-section-surface">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="enterprise-contact-page-grid">
+          <div class="enterprise-contact-column">
+            <article class="enterprise-page-overview-card" data-reveal>
+              <span class="eyebrow">
+                {lang === "zh" ? "直接聯絡" : "Direct contact"}
+              </span>
+              <div class="enterprise-contact-detail-grid mt-6">
+                {content.contactCards.map((card, index) => (
+                  <div class="enterprise-contact-detail-card">
+                    <FeatureIcon
+                      name={index === 0 ? "pin" : index === 1 ? "truck" : index === 2 ? "layers" : "clipboard"}
+                      className="enterprise-icon-compact"
+                    />
+                    <div>
+                      <p class="enterprise-page-overview-title">{card.label}</p>
+                      {card.href ? (
+                        <a class="enterprise-contact-detail-link" href={card.href}>
+                          {card.value}
+                        </a>
+                      ) : (
+                        <p class="enterprise-page-overview-body">{card.value}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article class="enterprise-page-overview-card" data-reveal style="--reveal-delay: 110ms;">
+              <span class="eyebrow">
+                {lang === "zh" ? "位置" : "Location"}
+              </span>
+              <h2 class="section-title mt-4">{content.mapTitle}</h2>
+              <p class="section-lead mt-4">{content.mapBody}</p>
+            </article>
+          </div>
+
+          <div class="enterprise-contact-column">
+            <div class="enterprise-contact-map-card" data-reveal style="--reveal-delay: 100ms;">
+              <iframe
+                title={content.mapTitle}
+                src={brand.mapEmbedSrc}
+                class="h-[22rem] w-full border-0"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+
+            <form
+              class="enterprise-contact-form-card"
+              action={content.formAction}
+              method="post"
+              enctype="text/plain"
+              data-reveal
+              style="--reveal-delay: 160ms;"
+            >
+              <span class="eyebrow">
+                {lang === "zh" ? "查詢表單" : "Inquiry form"}
+              </span>
+              <h2 class="section-title mt-4">{content.formTitle}</h2>
+              <p class="section-lead mt-4">{content.formIntro}</p>
+              <div class="enterprise-contact-form-grid mt-6">
+                <label class="enterprise-form-field">
+                  <span>{content.formLabels.name}</span>
+                  <input name={content.formLabels.name} type="text" required />
+                </label>
+                <label class="enterprise-form-field">
+                  <span>{content.formLabels.email}</span>
+                  <input name={content.formLabels.email} type="email" required />
+                </label>
+                <label class="enterprise-form-field enterprise-form-field-full">
+                  <span>{content.formLabels.company}</span>
+                  <input name={content.formLabels.company} type="text" />
+                </label>
+                <label class="enterprise-form-field enterprise-form-field-full">
+                  <span>{content.formLabels.message}</span>
+                  <textarea name={content.formLabels.message} rows="6" required></textarea>
+                </label>
+              </div>
+              <div class="enterprise-contact-form-footer">
+                <p class="enterprise-contact-form-note">{content.formLabels.note}</p>
+                <button class="btn-primary" type="submit">{content.formLabels.submit}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section-shell pt-0">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div class="enterprise-contact-panel" data-reveal>
+        <div>
+          <span class="eyebrow">
+            {lang === "zh" ? "下一步" : "Next step"}
+          </span>
+          <h2 class="section-title">{content.ctaTitle}</h2>
+          <p class="section-lead">{content.ctaBody}</p>
+        </div>
+
+        <div class="enterprise-contact-actions">
+          <a class="btn-primary" href={contactHref}>
+            {lang === "zh" ? "聯絡 ETAK" : "Contact ETAK"}
+          </a>
+          <a class="btn-secondary" href={homeHref(lang)}>
+            {lang === "zh" ? "返回首頁" : "Back to Home"}
+          </a>
+        </div>
+
+        <div class="enterprise-contact-meta">
+          <div class="enterprise-contact-meta-item">
+            <p class="enterprise-contact-meta-label">{lang === "zh" ? "電話" : "Phone"}</p>
+            <a class="enterprise-contact-meta-value" href={`tel:${brand.phone.replace(/\s+/g, "")}`}>
+              {brand.phone}
+            </a>
+          </div>
+          <div class="enterprise-contact-meta-item">
+            <p class="enterprise-contact-meta-label">{lang === "zh" ? "電郵" : "Email"}</p>
+            <a class="enterprise-contact-meta-value" href={`mailto:${brand.email}`}>
+              {brand.email}
+            </a>
+          </div>
+          <div class="enterprise-contact-meta-item">
+            <p class="enterprise-contact-meta-label">{lang === "zh" ? "營運基地" : "Operating base"}</p>
+            <p class="enterprise-contact-meta-value">
+              {lang === "zh" ? "葵涌 ATL Logistics Centre" : "ATL Logistics Centre, Kwai Chung"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
